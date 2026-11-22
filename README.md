@@ -1,256 +1,83 @@
-# Cassava Disease Mobile Deployment (Android + TensorFlow Lite)
-
-![Platform](https://img.shields.io/badge/Platform-Android-blue)
-![Model](https://img.shields.io/badge/Model-TensorFlow%20Lite-orange)
-![Framework-PyTorch](https://img.shields.io/badge/Framework-PyTorch-red)
-![ONNX](https://img.shields.io/badge/ONNX-Enabled-green)
-![License](https://img.shields.io/badge/License-MIT-lightgrey)
-
-<p align="center">
-  <img src="docs\screenshots\banner.png" alt="CassavaCare Banner" width="100%" />
-</p>
-
-This repository contains the **full mobile deployment pipeline** for the Cassava Leaf Disease Classification system. It includes:
-
-1. PyTorch → ONNX → TensorFlow Lite model conversion  
-2. Optimized `cassava_model.tflite` model used in production  
-3. Native Android mobile application  
-4. APK for direct installation  
-5. Verification and testing scripts  
-
-This project brings **state-of-the-art deep learning directly to smartphones** for real-time cassava leaf disease diagnosis.
-
----
-
-## Deployment Pipeline
-
-```text
-PyTorch (DenseNet121.pth)
-      ↓
-ONNX (model.onnx)
-      ↓
-TensorFlow SavedModel
-      ↓
-TensorFlow Lite (cassava_model.tflite)
-      ↓
-Android Mobile App (APK)
-```
----
-
-## Repository Structure
-
-```bash
-cassava-disease-mobile-deployment/
-│
-├── LICENSE
-├── README.md
-├── requirements.txt
-├── .gitignore
-│
-├── models/
-│   ├── DenseNet121.pth         # Original trained model from training repo
-│   ├── model_tf/               # Generated TensorFlow SavedModel Dir
-│   ├── model.onnx              # Exported ONNX model
-│   └── cassava_model.tflite    # FINAL DEPLOYED MODEL
-│
-├── conversion/                 # Conversion scripts and notebook
-│   ├── export_to_tflite_notebook.ipynb
-│   ├── pytorch_onnx_to_tflite.py
-│   └── verify_tflite.py
-│
-├── android-app/                # Android Studio project
-│   ├── app/
-│   ├── build.gradle
-│   ├── gradlew
-│   └── settings.gradle
-│
-└── docs/
-    ├── screenshots/
-    │
-    ├── test_image/
-    │   └── train-cbb-0.jpg
-    │
-    └── cassava-disease-app.apk    # FINAL APK
-```
----
-# Model Overview
+# CassavaScan
 
-### **Supported Classes**
+CassavaScan is an Android app that checks cassava leaves for common diseases. The model runs on the phone, so scanning works offline once the app is installed.
 
-* Cassava Bacterial Blight (CBB)
-* Cassava Brown Streak Disease (CBSD)
-* Cassava Green Mottle (CGM)
-* Cassava Mosaic Disease (CMD)
-* Healthy Leaf
+## What it does
 
----
+- Scan a leaf with the camera, or choose a photo from the gallery
+- Shows the likely disease and how confident the model is
+- Gives simple advice for each result
+- Keeps a history of scans on the phone
+- Explains common cassava diseases, with farming tips
 
-# Environment & Version Requirements
+## Detects
 
-To ensure compatibility during conversion and Android deployment, the following versions are recommended:
+- Cassava Bacterial Blight
+- Cassava Brown Streak Disease
+- Cassava Green Mottle
+- Cassava Mosaic Disease
+- Healthy leaves
+- Photos that are not cassava leaves are rejected
 
-### **Python / ML Stack**
+## Limits
 
-* **Python:** 3.9+
-* **PyTorch:** 2.0+
-* **TensorFlow:** 2.9+
-* **ONNX:** 1.14+
-* **ONNX Runtime:** 1.16+
+- Use photos of cassava leaves only, in daylight
+- Results are a guide, not a confirmed diagnosis
+- Accuracy so far is measured on held-out photos taken from the same sources as the training data, so accuracy on real farms may be lower
 
-### **Android Development**
+## Model
 
-* **Android Studio:** Ladybug | 2024.2.1 Patch 2
-* **Minimum Android SDK:** 26
-* **Target SDK:** 35
+- Image model trained with Google Teachable Machine
+- Training data: Kaggle cassava leaf disease competition photos, the Makerere University cassava image dataset (CC0), and other openly licensed photos
+- Packaged inside the app as a TensorFlow Lite model
 
-For full reproducibility, refer to:
+## Field testing
 
-```
-requirements.txt
-```
+Field testing with extension officers is planned. Results will be added here once the officer has labelled the farm photos.
 
----
+| Date | Location | Photos | Officer-labelled correct | Notes |
+|---|---|---|---|---|
+| Planned | Planned | 20 | Not yet tested | |
 
-## Related Training Repository
+## Known issues
 
-All model training, experiments, and evaluation were performed in the main repository:
+- The "Not a Cassava Leaf" class has only been tested on a small set of everyday objects
+- Bacterial Blight and Green Mottle have fewer test photos than the other classes
+- Some on-screen text is still being reviewed before release
 
-**[https://github.com/ekbarkacha/cassava-disease-classification](https://github.com/ekbarkacha/cassava-disease-classification)**
+## Requirements
 
----
+- Android 8.0 (API 26) or newer
+- No internet connection needed for scanning
 
-## Download Trained & Converted Models
+## Build the app
 
-To keep the repository lightweight, trained model weights and its conversions are stored externally [**Here**](https://drive.google.com/drive/folders/1tpFexu7ImzCprjWjDKHXjd2VC3ldeuR6?usp=drive_link).  
+The app builds automatically with GitHub Actions. Open the **Actions** tab, select the newest run, and download the **CassavaScan** artifact.
 
-This folder contains:
-- `DenseNet121.pth` - Original trained DenseNet121 model.
-- `model/model_tf/` - Generated TensorFlow SavedModel Dir. 
-- `model.onnx`- Exported ONNX model. 
-- `cassava_model.tflite` - Final tflite deployed model
+To build locally, open the `android-app` folder in Android Studio and run `./gradlew assembleDebug`.
 
-After downloading, place the files into there respective folders i.e `models/`.
+## Releases
 
----
+Each version is published under **Releases** with its APK attached. Version tags follow the form `v1.0.0`. See [CHANGELOG.md](CHANGELOG.md) for what changed in each version.
 
-## **Installation**
+## Original project
 
-### Clone this repository
+CassavaScan is based on the open-source CassavaCare project by Emmanuel Kirui Barkacha:
+https://github.com/ekbarkacha/cassava-disease-mobile-deployment
 
-```bash
-git clone https://github.com/ekbarkacha/cassava-disease-mobile-deployment.git
-cd cassava-disease-mobile-deployment
-```
+The original project is released under the MIT licence. Its copyright notice and licence are kept in the `LICENSE` file and in the source file headers.
 
-### Install Python dependencies
+## Credits
 
-```bash
-pip install -r requirements.txt
-```
----
+- Emmanuel Kirui Barkacha, for the original CassavaCare project
+- Kaggle, for the cassava leaf disease competition data
+- Makerere University, for the cassava image dataset (CC0)
+- Google, for Teachable Machine and TensorFlow Lite
 
-## Model Conversion
+## Licence
 
-### 1. PyTorch → ONNX → TensorFlow → TensorFlow Lite
+MIT. See [LICENSE](LICENSE).
 
-```bash
-python conversion/pytorch_onnx_to_tflite.py
-```
-### 2. Verify Generated TFLite Model
+## Contact
 
-**Dummy input test:**
-
-```bash
-python conversion/verify_tflite.py --mode dummy
-```
-
-**Real image test:**
-
-```bash
-python conversion/verify_tflite.py --mode image --image docs/test_image/train-cbb-0.jpg
-```
-
-You can also do a step by step full conversion in the [notebook](./conversion/export_to_tflite_notebook.ipynb):
-
-```text
-conversion/export_to_tflite_notebook.ipynb
-```
----
-
-## Final Deployed Model
-
-The final optimized model used in the Android application is located [here (cassava_model.tflite)](https://drive.google.com/file/d/1UTXexzt6sXtHY-5S_nkyZxY4f9OrI0jk/view?usp=sharing).
-
----
-
-## Android Mobile Application
-
-### Features
-
-* Real-time camera-based disease detection
-* Gallery image upload
-* On-device inference using TensorFlow Lite
-* Works offline (no internet required)
-* Lightweight & farmer-friendly UI
-
----
-
-### Run the App in Android Studio
-
-1. Open `android-app/` in **Android Studio**
-2. Let Gradle sync
-3. Place the model here:
-
-```text
-android-app/app/src/main/assets/cassava_model.tflite
-```
-
-4. Connect a device or start an emulator
-5. Click **Run**
-
----
-
-## App Download Options
-
-### Option 1: Google Play Store (Recommended)
-
-You can download and install the official release from [Google Play (CassavaCare)](https://play.google.com/store/apps/details?id=com.ek.cassavacare)
-
----
-
-### Option 2: Direct APK Installation
-
-You can also directly download and install the application APK from [here](./docs/cassava-disease-app.apk):
-
-```text
-docs/cassava-disease-app.apk
-
-```
-
----
-## Screenshots
-
-<p align="center">
-      <img src="docs/screenshots/screenshot_1.jpg"
-            alt="CassavaCare Splash Screen"
-            height="300" />
-      <img src="docs/screenshots/screenshot_2.jpg"
-            alt="CassavaCare Dashboard"
-            height="300" />
-      <img src="docs/screenshots/screenshot_3.jpg"
-            alt="CassavaCare Camera"
-            height="300" />
-      <img src="docs/screenshots/screenshot_4.jpg"
-            alt="CassavaCare History"
-            height="300" />
-      <img src="docs/screenshots/screenshot_5.jpg"
-            alt="CassavaCare Diseases"
-            height="300" />
-</p>
-
-
----
-
-## **License**
-
-This project is licensed under the MIT License - see the [LICENSE](./LICENSE) file for details.
+Sunday Samuel: [github.com/Sunday-Samuel](https://github.com/Sunday-Samuel)
