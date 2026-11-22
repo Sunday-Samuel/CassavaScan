@@ -3,17 +3,24 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
 
-    <color name="neutral_gray">#F1F8F4</color> <!-- #F5F5F5 Light gray for background -->
-    <color name="primary_green">#228B22</color> <!-- #228B22 Forest green -->
-    <color name="secondary_brown">#8B4513</color> <!-- Earthy brown -->
-    <color name="text_primary">@android:color/black</color>
-    <color name="text_secondary">@android:color/darker_gray</color>
-    <color name="error_red">#FF4500</color>
-    <color name="success_green">#90EE90</color>
-    <color name="card">#E9EFEB</color>
+    <!-- Deep green: main brand colour -->
+    <color name="primary_green">#1B5E20</color>
+    <color name="primary_green_light">#7BC67E</color>
 
+    <!-- Warm amber: complementary accent. Name kept for compatibility. -->
+    <color name="secondary_brown">#E8A317</color>
+    <color name="secondary_amber_light">#F4C25B</color>
+
+    <!-- Backgrounds and surfaces (light mode) -->
+    <color name="neutral_gray">#F4F8F5</color>
+    <color name="card">#FFFFFF</color>
     <color name="cardh">#212121</color>
 
+    <!-- Text (light mode) -->
+    <color name="text_primary">#1A2A1D</color>
+    <color name="text_secondary">#5B6B5E</color>
 
+    <color name="error_red">#C62828</color>
+    <color name="success_green">#2E7D32</color>
     <color name="progress_bar_tint">@color/primary_green</color>
 </resources>
