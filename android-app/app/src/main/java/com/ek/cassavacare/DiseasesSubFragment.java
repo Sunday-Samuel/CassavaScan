@@ -1,13 +1,10 @@
 /*
- * Project: CassavaCare
+ * Project: CassavaScan
  * File: DiseasesSubFragment.java
- * Description: Displays educational information on common cassava diseases
+ * Description: Educational information on common cassava diseases
  *
- * Author: Emmanuel Kirui Barkacha
- * Email: ebarkacha@aimsammi.org
- * GitHub: https://github.com/ekbarkacha
- *
- * Created: 2025
+ * Based on the open-source CassavaCare project
+ * Original author: Emmanuel Kirui Barkacha (https://github.com/ekbarkacha)
  * License: MIT
  */
 
@@ -31,38 +28,33 @@ public class DiseasesSubFragment extends Fragment {
 
         TextView tvContent = root.findViewById(R.id.tv_diseases_content);
         tvContent.setText(Html.fromHtml(
-                "Common Cassava Diseases:<br><br>" +
+                "<b>Common cassava diseases</b><br><br>" +
 
-                        "1. <b>Cassava Mosaic Disease (CMD)</b>:<br>" +
-                        "&nbsp;&nbsp;• Symptoms: Mottled or mosaic patterns on leaves, leaf curling, stunted growth, reduced root size.<br>" +
-                        "&nbsp;&nbsp;• Cause: Viruses from the Geminiviridae family, primarily transmitted by whiteflies.<br>" +
-                        "&nbsp;&nbsp;• Impact: Significant yield losses due to reduced photosynthesis and root development.<br>" +
-                        "&nbsp;&nbsp;• Reference: <a href='https://en.wikipedia.org/wiki/Cassava_mosaic_viruses'>Wikipedia</a><br><br>" +
+                        "<b>1. Cassava Mosaic Disease (CMD)</b><br>" +
+                        "&nbsp;&nbsp;• <b>Signs:</b> yellow and green mosaic patterns on leaves, leaves that curl or look smaller than normal, and stunted plants.<br>" +
+                        "&nbsp;&nbsp;• <b>Cause:</b> cassava mosaic viruses, spread by whiteflies and infected cuttings.<br>" +
+                        "&nbsp;&nbsp;• <b>Why it matters:</b> it can cut yields badly if left alone.<br><br>" +
 
-                        "2. <b>Cassava Bacterial Blight (CBB)</b>:<br>" +
-                        "&nbsp;&nbsp;• Symptoms: Angular necrotic spots on leaves, wilting, dieback, and vascular necrosis.<br>" +
-                        "&nbsp;&nbsp;• Cause: Bacterial pathogen Xanthomonas axonopodis pv. manihotis.<br>" +
-                        "&nbsp;&nbsp;• Impact: Affects plant growth and tuber quality, leading to economic losses.<br>" +
-                        "&nbsp;&nbsp;• Reference: <a href='https://en.wikipedia.org/wiki/Bacterial_blight_of_cassava'>Wikipedia</a><br><br>" +
+                        "<b>2. Cassava Bacterial Blight (CBB)</b><br>" +
+                        "&nbsp;&nbsp;• <b>Signs:</b> water-soaked, angular dark spots on leaves, wilting, and dieback of shoots.<br>" +
+                        "&nbsp;&nbsp;• <b>Cause:</b> a bacterium that spreads through infected cuttings, rain splash, and contaminated tools.<br>" +
+                        "&nbsp;&nbsp;• <b>Why it matters:</b> it weakens plants and reduces tuber quality.<br><br>" +
 
-                        "3. <b>Cassava Brown Streak Disease (CBSD)</b>:<br>" +
-                        "&nbsp;&nbsp;• Symptoms: Chlorosis and necrosis on leaves, brown streaks on stems, and dry rot in roots.<br>" +
-                        "&nbsp;&nbsp;• Cause: Cassava brown streak virus (CBSV) and Ugandan cassava brown streak virus (UCBSV).<br>" +
-                        "&nbsp;&nbsp;• Impact: Major threat to food security, especially in East Africa, due to severe root yield loss.<br>" +
-                        "&nbsp;&nbsp;• Reference: <a href='https://en.wikipedia.org/wiki/Cassava_brown_streak_virus_disease'>Wikipedia</a><br><br>" +
+                        "<b>3. Cassava Brown Streak Disease (CBSD)</b><br>" +
+                        "&nbsp;&nbsp;• <b>Signs:</b> pale yellow patches along leaf veins, brown streaks on stems, and brown rot inside roots.<br>" +
+                        "&nbsp;&nbsp;• <b>Cause:</b> cassava brown streak viruses, spread by whiteflies and infected cuttings.<br>" +
+                        "&nbsp;&nbsp;• <b>Why it matters:</b> roots can rot even when the leaves look only slightly sick.<br><br>" +
 
-                        "4. <b>Cassava Green Mottle (CGM)</b>:<br>" +
-                        "&nbsp;&nbsp;• Symptoms: Green mottling or yellow patches on leaves, often with distorted growth.<br>" +
-                        "&nbsp;&nbsp;• Cause: Cassava green mottle virus (CGMV), transmitted by whiteflies.<br>" +
-                        "&nbsp;&nbsp;• Impact: Reduces leaf development and plant vigor, leading to lower yields.<br>" +
-                        "&nbsp;&nbsp;• Reference: <a href='https://en.wikipedia.org/wiki/Cassava_green_mottle_virus'>Wikipedia</a><br><br>" +
+                        "<b>4. Cassava Green Mottle (CGM)</b><br>" +
+                        "&nbsp;&nbsp;• <b>Signs:</b> light green or yellow mottling on leaves, sometimes with distorted growth.<br>" +
+                        "&nbsp;&nbsp;• <b>Cause:</b> cassava green mottle virus, mainly spread through infected cuttings.<br>" +
+                        "&nbsp;&nbsp;• <b>Why it matters:</b> it can lower leaf development and yields.<br><br>" +
 
-                        "<b>Use the Scan feature for detection</b><br>"
+                        "<i>Use the Scan screen to check a leaf. For a confirmed diagnosis, ask an extension officer. " +
+                        "For trusted guidance, see IITA or NaCRRI.</i>"
         ));
 
-        // Enable clickable links
         tvContent.setMovementMethod(LinkMovementMethod.getInstance());
-
 
         return root;
     }
