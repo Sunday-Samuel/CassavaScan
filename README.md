@@ -43,7 +43,6 @@ CassavaScan/
 ├── LICENSE
 ├── README.md
 ├── CHANGELOG.md
-├── requirements.txt
 ├── .gitignore
 │
 ├── .github/
