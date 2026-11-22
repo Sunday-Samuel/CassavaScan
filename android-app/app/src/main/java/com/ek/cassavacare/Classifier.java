@@ -1,113 +1,101 @@
 /*
  * Project: CassavaCare
  * File: Classifier.java
- * Description: TensorFlow Lite image classifier for cassava leaf disease detection
- *
- * Author: Emmanuel Kirui Barkacha
- * Email: ebarkacha@aimsammi.org
- * GitHub: https://github.com/ekbarkacha
- *
- * Created: 2025
- * License: MIT
+ * Description: TensorFlow Lite image classifier for cassava leaf disease detection.
+ *              Based on the open-source CassavaCare project by Emmanuel Kirui Barkacha (MIT License).
  */
 
 package com.ek.cassavacare;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.Matrix;
 import android.util.Log;
+
 import org.tensorflow.lite.Interpreter;
 import org.tensorflow.lite.support.common.FileUtil;
+
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
+import java.util.Arrays;
 
 public class Classifier {
-    private Interpreter tflite;
+
+    public static final String NOT_LEAF_MESSAGE =
+            "No cassava leaf found. Please photograph a cassava leaf in good light.";
+    public static final String UNCERTAIN_MESSAGE =
+            "The model is uncertain about this image. Please ensure the leaf is clearly visible and well-lit, then try again.";
+
+    private static final String TAG = "Classifier";
+    private static final String MODEL_FILE = "cassava_model.tflite";
+    private static final String NOT_LEAF_LABEL = "Not a Cassava Leaf";
+    private static final float CONFIDENCE_THRESHOLD = 0.75f;
+
+    // Must match the order in labels.txt from the Teachable Machine export.
     private final String[] labels = {
             "Cassava Bacterial Blight",
             "Cassava Brown Streak Disease",
             "Cassava Green Mottle",
             "Cassava Mosaic Disease",
-            "Healthy"
+            "Healthy",
+            NOT_LEAF_LABEL
     };
-    private static final int INPUT_SIZE = 380; // Matches CenterCrop size
-    private static final float[] MEAN = {0.485f, 0.456f, 0.406f};
-    private static final float[] STD = {0.229f, 0.224f, 0.225f};
-    private static final String TAG = "Classifier";
+
+    private Interpreter tflite;
+    private final int inputSize;
 
     public Classifier(Context context) throws IOException {
-        tflite = new Interpreter(FileUtil.loadMappedFile(context, "cassava_model.tflite"));
-        Log.d(TAG, "Model loaded successfully");
+        tflite = new Interpreter(FileUtil.loadMappedFile(context, MODEL_FILE));
+        int[] shape = tflite.getInputTensor(0).shape(); // expected [1, size, size, 3]
+        inputSize = shape[1];
+        Log.d(TAG, "Model input shape: " + Arrays.toString(shape));
     }
 
     public String classify(Bitmap bitmap) {
-//        if (bitmap == null || bitmap.getWidth() < INPUT_SIZE || bitmap.getHeight() < INPUT_SIZE) {
-//            Log.e(TAG, "Invalid input image: " + (bitmap == null ? "null" : bitmap.getWidth() + "x" + bitmap.getHeight()));
-//            throw new IllegalArgumentException("Invalid input image");
-//        }
         if (bitmap == null) {
-            Log.e(TAG, "Invalid input image: " + "null");
             throw new IllegalArgumentException("Invalid input image");
         }
 
+        float[] probabilities = getProbabilities(bitmap);
+        Log.d(TAG, "Probabilities: " + Arrays.toString(probabilities));
 
-        Bitmap adjustedBitmap = adjustBrightnessContrast(bitmap);
-        Bitmap resizedBitmap = resizeBitmap(adjustedBitmap, 400);
-        Log.d(TAG, "Resized dimensions: " + resizedBitmap.getWidth() + "x" + resizedBitmap.getHeight());
-        Bitmap croppedBitmap = centerCropBitmap(resizedBitmap, INPUT_SIZE, INPUT_SIZE);
-        Log.d(TAG, "Cropped dimensions: " + croppedBitmap.getWidth() + "x" + croppedBitmap.getHeight());
-        ByteBuffer inputBuffer = convertBitmapToByteBuffer(croppedBitmap);
-
-        float[][] output = new float[1][labels.length];
-        tflite.run(inputBuffer, output);
-        float[] probabilities = softmax(output[0]);
-        Log.d(TAG, "Probabilities: " + java.util.Arrays.toString(probabilities));
-
-        int maxIndex = 0;
-        float maxConfidence = probabilities[0];
+        int best = 0;
         for (int i = 1; i < probabilities.length; i++) {
-            if (probabilities[i] > maxConfidence) {
-                maxIndex = i;
-                maxConfidence = probabilities[i];
+            if (probabilities[i] > probabilities[best]) {
+                best = i;
             }
         }
-        maxConfidence = Math.min(Math.max(maxConfidence, 0.0f), 1.0f);
-        if (maxConfidence < 0.8f) {
-            String warningMessage = "The model is uncertain about this image. Please ensure the leaf is clearly visible and well-lit, then try again.";
-            Log.w(TAG, "Low confidence: " + (maxConfidence * 100) + "%");
-            return warningMessage;
+        float confidence = probabilities[best];
+
+        if (labels[best].equals(NOT_LEAF_LABEL)) {
+            return NOT_LEAF_MESSAGE;
         }
-        String result = String.format("%s - %.0f%% sure", labels[maxIndex], maxConfidence * 100);
-        Log.d(TAG, "Classification result: " + result);
-        return result;
+        if (confidence < CONFIDENCE_THRESHOLD) {
+            Log.w(TAG, "Low confidence: " + (confidence * 100) + "%");
+            return UNCERTAIN_MESSAGE;
+        }
+        return String.format("%s - %.0f%% sure", labels[best], confidence * 100);
     }
 
     public float[] getProbabilities(Bitmap bitmap) {
-        Bitmap adjustedBitmap = adjustBrightnessContrast(bitmap);
-        Bitmap resizedBitmap = resizeBitmap(adjustedBitmap, 400);
-        Bitmap croppedBitmap = centerCropBitmap(resizedBitmap, INPUT_SIZE, INPUT_SIZE);
-        ByteBuffer inputBuffer = convertBitmapToByteBuffer(croppedBitmap);
+        ByteBuffer input = toInputBuffer(bitmap);
         float[][] output = new float[1][labels.length];
-        tflite.run(inputBuffer, output);
-        return softmax(output[0]);
+        tflite.run(input, output);
+        return toProbabilities(output[0]);
     }
 
-    private Bitmap adjustBrightnessContrast(Bitmap bitmap) {
-//        Bitmap adjusted = Bitmap.createBitmap(bitmap.getWidth(), bitmap.getHeight(), bitmap.getConfig());
-//        android.graphics.Canvas canvas = new android.graphics.Canvas(adjusted);
-//        android.graphics.Paint paint = new android.graphics.Paint();
-//        ColorMatrix colorMatrix = new ColorMatrix();
-//        colorMatrix.set(new float[] {
-//                1.2f, 0, 0, 0, 20,
-//                0, 1.2f, 0, 0, 20,
-//                0, 0, 1.2f, 0, 20,
-//                0, 0, 0, 1, 0
-//        });
-//        paint.setColorFilter(new ColorMatrixColorFilter(colorMatrix));
-//        canvas.drawBitmap(bitmap, 0, 0, paint);
-        return bitmap;
+    // Uses the model's outputs as they are if they already sum to 1, otherwise applies softmax.
+    private float[] toProbabilities(float[] values) {
+        float sum = 0f;
+        boolean nonNegative = true;
+        for (float v : values) {
+            sum += v;
+            if (v < 0f) nonNegative = false;
+        }
+        if (nonNegative && Math.abs(sum - 1f) < 0.01f) {
+            return values;
+        }
+        return softmax(values);
     }
 
     private float[] softmax(float[] logits) {
@@ -115,48 +103,33 @@ public class Classifier {
         for (float logit : logits) {
             if (logit > maxLogit) maxLogit = logit;
         }
-        float sum = 0.0f;
-        float[] probabilities = new float[logits.length];
+        float sum = 0f;
+        float[] result = new float[logits.length];
         for (int i = 0; i < logits.length; i++) {
-            probabilities[i] = (float) Math.exp(logits[i] - maxLogit);
-            sum += probabilities[i];
+            result[i] = (float) Math.exp(logits[i] - maxLogit);
+            sum += result[i];
         }
-        for (int i = 0; i < probabilities.length; i++) {
-            probabilities[i] /= sum;
+        for (int i = 0; i < result.length; i++) {
+            result[i] /= sum;
         }
-        return probabilities;
+        return result;
     }
 
-    private Bitmap resizeBitmap(Bitmap bitmap, int targetSize) {
-        int width = bitmap.getWidth();
-        int height = bitmap.getHeight();
-        float scale = targetSize / (float) Math.min(width, height);
-        Matrix matrix = new Matrix();
-        matrix.postScale(scale, scale);
-        return Bitmap.createScaledBitmap(bitmap, (int) (width * scale), (int) (height * scale), true);
-    }
-
-    private Bitmap centerCropBitmap(Bitmap bitmap, int targetWidth, int targetHeight) {
-        int width = bitmap.getWidth();
-        int height = bitmap.getHeight();
-        int newX = (width - targetWidth) / 2;
-        int newY = (height - targetHeight) / 2;
-        return Bitmap.createBitmap(bitmap, newX, newY, targetWidth, targetHeight);
-    }
-
-    private ByteBuffer convertBitmapToByteBuffer(Bitmap bitmap) {
-        ByteBuffer buffer = ByteBuffer.allocateDirect(1 * INPUT_SIZE * INPUT_SIZE * 3 * 4);
+    // Scales the photo to the model's input size and maps pixels to -1..1,
+    // the range Teachable Machine image models expect.
+    private ByteBuffer toInputBuffer(Bitmap bitmap) {
+        Bitmap scaled = Bitmap.createScaledBitmap(bitmap, inputSize, inputSize, true);
+        ByteBuffer buffer = ByteBuffer.allocateDirect(4 * inputSize * inputSize * 3);
         buffer.order(ByteOrder.nativeOrder());
-        int[] pixels = new int[INPUT_SIZE * INPUT_SIZE];
-        bitmap.getPixels(pixels, 0, INPUT_SIZE, 0, 0, INPUT_SIZE, INPUT_SIZE);
+
+        int[] pixels = new int[inputSize * inputSize];
+        scaled.getPixels(pixels, 0, inputSize, 0, 0, inputSize, inputSize);
         for (int pixel : pixels) {
-            float r = ((pixel >> 16) & 0xFF) / 255.0f;
-            float g = ((pixel >> 8) & 0xFF) / 255.0f;
-            float b = (pixel & 0xFF) / 255.0f;
-            buffer.putFloat((r - MEAN[0]) / STD[0]);
-            buffer.putFloat((g - MEAN[1]) / STD[1]);
-            buffer.putFloat((b - MEAN[2]) / STD[2]);
+            buffer.putFloat(((pixel >> 16) & 0xFF) / 127.5f - 1f);
+            buffer.putFloat(((pixel >> 8) & 0xFF) / 127.5f - 1f);
+            buffer.putFloat((pixel & 0xFF) / 127.5f - 1f);
         }
+        buffer.rewind();
         return buffer;
     }
 
