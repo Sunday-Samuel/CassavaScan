@@ -10,22 +10,37 @@
         android:id="@+id/tv_splash_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="CassavaCare"
-        android:textSize="32sp"
-        android:textColor="@android:color/white"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:text="@string/app_name"
+        android:textColor="@color/white"
+        android:textSize="34sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@id/splash_accent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_chainStyle="packed" />
+
+    <View
+        android:id="@+id/splash_accent"
+        android:layout_width="64dp"
+        android:layout_height="4dp"
+        android:layout_marginTop="12dp"
+        android:background="@color/secondary_brown"
+        app:layout_constraintTop_toBottomOf="@id/tv_splash_title"
+        app:layout_constraintBottom_toTopOf="@id/tv_splash_tagline"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent" />
 
     <TextView
         android:id="@+id/tv_splash_tagline"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Protect Your Crops with AI"
-        android:textSize="18sp"
-        android:textColor="@android:color/white"
-        app:layout_constraintTop_toBottomOf="@id/tv_splash_title"
+        android:layout_marginTop="12dp"
+        android:alpha="0.9"
+        android:text="Check your cassava leaves in seconds"
+        android:textColor="@color/white"
+        android:textSize="16sp"
+        app:layout_constraintTop_toBottomOf="@id/splash_accent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent" />
 
