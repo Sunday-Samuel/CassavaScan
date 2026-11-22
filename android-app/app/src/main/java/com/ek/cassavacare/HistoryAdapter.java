@@ -1,13 +1,10 @@
 /*
- * Project: CassavaCare
- * File: HistoryAdapter.java
- * Description: Adapter for displaying the history of scanned cassava leaves, including results, timestamps, and images.
+ * Project: CassavaScan
+ * File: AboutSubFragment.java
+ * Description: Displays application information, model details, and credits
  *
- * Author: Emmanuel Kirui Barkacha
- * Email: ebarkacha@aimsammi.org
- * GitHub: https://github.com/ekbarkacha
- *
- * Created: 2025
+ * Based on the open-source CassavaCare project
+ * Original author: Emmanuel Kirui Barkacha (https://github.com/ekbarkacha)
  * License: MIT
  */
 
