@@ -1,14 +1,10 @@
 /*
- * Project: CassavaCare
- * File: HomeFragment.java
- * Description: Fragment displaying the home screen with recent scan results, statistics, farming tips,
- *              and a bar chart summarizing scan data.
+ * Project: CassavaScan
+ * File: AboutSubFragment.java
+ * Description: Displays application information, model details, and credits
  *
- * Author: Emmanuel Kirui Barkacha
- * Email: ebarkacha@aimsammi.org
- * GitHub: https://github.com/ekbarkacha
- *
- * Created: 2025
+ * Based on the open-source CassavaCare project
+ * Original author: Emmanuel Kirui Barkacha (https://github.com/ekbarkacha)
  * License: MIT
  */
 
@@ -60,7 +56,7 @@ public class HomeFragment extends Fragment {
     private static final String[] FARMING_TIPS = {
             "Rotate crops every 2-3 years to prevent disease buildup.",
             "Use disease-resistant cassava varieties for better yield.",
-            "Monitor plants regularly with CassavaCare scans.",
+            "Monitor plants regularly with CassavaScan scans.",
             "Apply organic fertilizers to boost plant health.",
             "Control whitefly vectors to prevent Cassava Mosaic Disease."
     };
