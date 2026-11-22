@@ -31,5 +31,5 @@ jobs:
 
       - uses: actions/upload-artifact@v4
         with:
-          name: cassavacare-debug-apk
-          path: android-app/app/build/outputs/apk/debug/*.apk
+          name: CassavaScan
+          path: android-app/app/build/outputs/apk/debug/CassavaScan.apk
