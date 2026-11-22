@@ -288,7 +288,7 @@ public class ScanFragment extends Fragment {
         executorService.execute(() -> {
             try {
                 String result = classifier.classify(bitmap);
-                if (result.contains("uncertain about this image")) {
+                if (result.equals(Classifier.NOT_LEAF_MESSAGE) || result.contains("uncertain about this image")) {
                     // Classification was not confident
                     requireActivity().runOnUiThread(() -> {
                         int textColor = ContextCompat.getColor(requireContext(), R.color.error_red);
