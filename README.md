@@ -6,9 +6,6 @@
 ![Min Android](https://img.shields.io/badge/Android-8.0%2B-lightgrey)
 ![License](https://img.shields.io/badge/License-MIT-lightgrey)
 
-<p align="center">
-  <img src="docs/screenshots/banner.png" alt="CassavaScan banner" width="100%" />
-</p>
 
 CassavaScan is an Android app that checks cassava leaves for common diseases. It runs the model on the phone, so scanning works offline once the app is installed.
 
