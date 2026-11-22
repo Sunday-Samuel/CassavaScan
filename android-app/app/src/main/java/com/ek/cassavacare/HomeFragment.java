@@ -54,12 +54,37 @@ public class HomeFragment extends Fragment {
     private BarChart chartScanStats;
 
     private static final String[] FARMING_TIPS = {
-            "Rotate crops every 2-3 years to prevent disease buildup.",
-            "Use disease-resistant cassava varieties for better yield.",
-            "Monitor plants regularly with CassavaScan scans.",
-            "Apply organic fertilizers to boost plant health.",
-            "Control whitefly vectors to prevent Cassava Mosaic Disease."
-    };
+            "Plant cuttings only from healthy plants that show no leaf symptoms.",
+            "Remove and destroy plants with mosaic or brown streak symptoms early.",
+            "Clean cutting tools with alcohol or fire between plants.",
+            "Space plants properly so air moves through the field and leaves dry quickly.",
+            "Weed regularly, since weeds can host whiteflies and viruses.",
+            "Walk your field weekly and check the underside of leaves for whiteflies.",
+            "Avoid planting cassava next to infected fields.",
+            "Rotate cassava with legumes such as cowpea or groundnut to break pest cycles.",
+            "Add compost or well-rotted manure to improve soil health.",
+            "Mulch around plants to keep the soil moist and reduce weeds.",
+            "Water early in the day when you can.",
+            "Avoid waterlogged soil. Plant on ridges with good drainage.",
+            "Never take cuttings from plants that look sick.",
+            "Keep simple farm records of planting dates and any disease you see.",
+            "Ask an extension officer before using any pesticide, and follow the label exactly.",
+            "Wear gloves and wash your hands after handling diseased plants.",
+            "Burn or bury infected plant material instead of leaving it in the field.",
+            "Plant at the start of the rainy season, when the soil has good moisture.",
+            "Harvest mature roots on time, since delayed harvest increases losses from rot.",
+            "Store harvested roots in a cool, dry place and use them quickly.",
+            "Use resistant cassava varieties recommended for your area.",
+            "Check cuttings for pests and damage before you plant them.",
+            "Use organic fertilizer such as well-rotted manure to build soil health.",
+            "Too much nitrogen fertilizer can encourage leafy growth instead of root growth.",
+            "Keep children and animals away from fields after spraying.",
+            "Store farm chemicals out of reach of children, in their original containers.",
+            "Use a mask and gloves when spraying, and never spray in strong wind.",
+            "Keep a few healthy plants as a reference to compare against sick ones.",
+            "Inspect your fields after heavy rain, since wet weather can spread disease.",
+            "Choose clean, certified planting material whenever it is available."
+            };
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
